@@ -31,7 +31,7 @@ if (wareFile.Length > 0)
 {
     foreach (var line in wareFile)
     {
-        Ware ware = JsonSerializer.Deserialize<Ware>(line);
+        Ware? ware = JsonSerializer.Deserialize<Ware?>(line);
         wareRepository.Add(ware);
         wareRepository.Save();
     }
@@ -120,19 +120,18 @@ static void ReadWares(IReadRepository<IEntity> repository)
     }
 }
 
-static void SaveInfo(IRepository<Ware> wareRepository, string? wareInFile)
+static void SaveInfo(IRepository<Ware> wareRepository, string wareInFile)
 {
     var wares = wareRepository.GetAll();
-    File.WriteAllText(wareInFile, String.Empty);
+    var jsonList = new List<string>();
+
     foreach (var ware in wares)
     {
         var json = JsonSerializer.Serialize(ware);
-        using (var writer = File.AppendText(wareInFile))
-        {
-            writer.Write(json);
-        }
+        jsonList.Add(json);
     }
 
+    File.WriteAllLines(wareInFile, jsonList);
 
     Console.WriteLine("Session ended. Goodbye!");
 }
