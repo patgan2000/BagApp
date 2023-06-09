@@ -1,4 +1,8 @@
-﻿using WareStorageApp.Data;
+﻿using System.IO.Enumeration;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using WareStorageApp.Data;
 using WareStorageApp.Entities;
 using WareStorageApp.Repositories;
 Console.WriteLine("*****************************************************************************");
@@ -13,7 +17,26 @@ Console.WriteLine("(2) Remove a new ware");
 Console.WriteLine("(3) Read the current list of wares");
 Console.WriteLine("(Q) End the session");
 
+var wareInFile = "wareFile.json";
+
+    if (!File.Exists(wareInFile))
+    {
+        using (FileStream fs = File.Create(wareInFile)) ;
+    }
+
 var wareRepository = new SqlRepository<Ware>(new WareStorageDbContext());
+var wareFile = File.ReadAllLines(wareInFile);
+
+if (wareFile.Length > 0)
+{
+    foreach (var line in wareFile)
+    {
+        Ware ware = JsonSerializer.Deserialize<Ware>(line);
+        wareRepository.Add(ware);
+        wareRepository.Save();
+    }
+}
+
 wareRepository.WareAdded += WareAddedHandler;
 wareRepository.WareRemoved += WareRemovedHandler;
 
@@ -40,7 +63,7 @@ while (true)
 
         case "q":
         case "Q":
-            SaveInfo(wareRepository);
+            SaveInfo(wareRepository, wareInFile);
             return;
 
         default:
@@ -97,20 +120,32 @@ static void ReadWares(IReadRepository<IEntity> repository)
     }
 }
 
-static void SaveInfo(IRepository<Ware> wareRepository)
+static void SaveInfo(IRepository<Ware> wareRepository, string? wareInFile)
 {
+    var wares = wareRepository.GetAll();
+    File.WriteAllText(wareInFile, String.Empty);
+    foreach (var ware in wares)
+    {
+        var json = JsonSerializer.Serialize(ware);
+        using (var writer = File.AppendText(wareInFile))
+        {
+            writer.Write(json);
+        }
+    }
+
+
     Console.WriteLine("Session ended. Goodbye!");
 }
 
 static void WareAddedHandler(object? sender, Ware ware)
 {
-    var logEntry = $"{DateTime.Now}-{nameof(WareAddedHandler)}-Added ware: {ware.Name}";
+    var logEntry = $"{DateTime.Now}-Added ware: {ware.Name}";
     WriteAuditLog(logEntry);
 }
 
 static void WareRemovedHandler(object? sender, Ware ware)
 {
-    var logEntry = $"{DateTime.Now}-{nameof(WareRemovedHandler)}-Removed ware: {ware.Name}";
+    var logEntry = $"{DateTime.Now}-Removed ware: {ware.Name}";
     WriteAuditLog(logEntry);
 }
 
