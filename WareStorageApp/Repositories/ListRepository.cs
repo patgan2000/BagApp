@@ -7,9 +7,12 @@ namespace WareStorageApp.Repositories
     {
         private readonly List<T> _items = new();
 
+        public event EventHandler<T>? WareAdded;
+        public event EventHandler<T>? WareRemoved;
+
         public IEnumerable<T> GetAll() => _items.ToList();
 
-        public T GetById(int id) => _items.Single(T => T.Id == id);
+        public T? GetById(int id) => _items.Single(T => T.Id == id);
 
         public void Add(T item)
         {
@@ -24,7 +27,8 @@ namespace WareStorageApp.Repositories
 
         public void Save()
         {
-            // save is not required with list
+            Console.WriteLine("Data saved to file.");
         }
+
     }
 }
