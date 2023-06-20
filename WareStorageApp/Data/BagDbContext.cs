@@ -6,13 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using WareStorageApp.Entities;
 
-namespace WareStorageApp.Data
+namespace BagApp.Data
 {
-    public class WareStorageDbContext : DbContext
+    public class BagDbContext : DbContext
     {
-        public DbSet<Ware> Wares => Set<Ware>();
+        public DbSet<Bag> Bags => Set<Bag>();
 
-        public DbSet<Other> Others => Set<Other>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

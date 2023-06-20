@@ -1,158 +1,167 @@
-﻿using System.IO.Enumeration;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
-using WareStorageApp.Data;
+﻿using Microsoft.Extensions.DependencyInjection;
+using WareStorageApp;
+using WareStorageApp.DataProvides;
 using WareStorageApp.Entities;
 using WareStorageApp.Repositories;
-Console.WriteLine("*****************************************************************************");
-Console.WriteLine("Welcome to [WareStorageApp]!");
-Console.WriteLine("Using this application, you can enter the history of your fashion purchases.");
-Console.WriteLine("*****************************************************************************");
-Thread.Sleep(2000);
-Console.WriteLine();
-Console.WriteLine("List of available actions:");
-Console.WriteLine("(1) Add a new ware");
-Console.WriteLine("(2) Remove a new ware");
-Console.WriteLine("(3) Read the current list of wares");
-Console.WriteLine("(Q) End the session");
 
-var wareInFile = "wareFile.json";
+var services = new ServiceCollection();
+services.AddSingleton<IApp, App> (); 
+services.AddSingleton<IRepository<Bag>, ListRepository<Bag>> (); 
+services.AddSingleton<IUserCommunication, UserCommunication> ();
+services.AddSingleton<IBagsProvider, BagsProvider>();
 
-    if (!File.Exists(wareInFile))
-    {
-        using (FileStream fs = File.Create(wareInFile)) ;
-    }
+var serviceProvider = services.BuildServiceProvider();
+var app = serviceProvider.GetService<IApp> ()!;
+app.Run();
 
-var wareRepository = new SqlRepository<Ware>(new WareStorageDbContext());
-var wareFile = File.ReadAllLines(wareInFile);
+//Console.WriteLine("*****************************************************************************");
+//Console.WriteLine("Welcome to [WareStorageApp]!");
+//Console.WriteLine("Using this application, you can enter the history of your fashion purchases.");
+//Console.WriteLine("*****************************************************************************");
+//Thread.Sleep(2000);
+//Console.WriteLine();
+//Console.WriteLine("List of available actions:");
+//Console.WriteLine("(1) Add a new ware");
+//Console.WriteLine("(2) Remove a new ware");
+//Console.WriteLine("(3) Read the current list of wares");
+//Console.WriteLine("(Q) End the session");
 
-if (wareFile.Length > 0)
-{
-    foreach (var line in wareFile)
-    {
-        Ware? ware = JsonSerializer.Deserialize<Ware?>(line);
-        wareRepository.Add(ware);
-        wareRepository.Save();
-    }
-}
+//var wareInFile = "wareFile.json";
 
-wareRepository.WareAdded += WareAddedHandler;
-wareRepository.WareRemoved += WareRemovedHandler;
+//    if (!File.Exists(wareInFile))
+//    {
+//        using (FileStream fs = File.Create(wareInFile)) ;
+//    }
 
-while (true)
-{
-    Console.WriteLine("Choose an action: 1,2,3 or Q:");
-    var inputAction = Console.ReadLine();
+//var wareRepository = new SqlRepository<Ware>(new WareStorageDbContext());
+//var wareFile = File.ReadAllLines(wareInFile);
 
+//if (wareFile.Length > 0)
+//{
+//    foreach (var line in wareFile)
+//    {
+//        Ware? ware = JsonSerializer.Deserialize<Ware?>(line);
+//        wareRepository.Add(ware);
+//        wareRepository.Save();
+//    }
+//}
 
-    switch (inputAction)
+//wareRepository.WareAdded += WareAddedHandler;
+//wareRepository.WareRemoved += WareRemovedHandler;
 
-    {
-        case "1":
-            AddWare(wareRepository);
-            break;
-
-        case "2":
-            RemoveWare(wareRepository);
-            break;
-
-        case "3":
-            ReadWares(wareRepository);
-            break;
-
-        case "q":
-        case "Q":
-            SaveInfo(wareRepository, wareInFile);
-            return;
-
-        default:
-            Console.WriteLine("You have to type 1,2,3 or Q");
-            continue;
+//while (true)
+//{
+//    Console.WriteLine("Choose an action: 1,2,3 or Q:");
+//    var inputAction = Console.ReadLine();
 
 
-    }  
-} 
+//    switch (inputAction)
 
-static void AddWare(IWriteRepository<Ware> wareRepository)
-{
-    Console.WriteLine("Enter the name of the ware (or Q to cancel):");
-    var name = Console.ReadLine();
+//    {
+//        case "1":
+//            AddWare(wareRepository);
+//            break;
 
-        if (name == "q" || name == "Q")
-        {
-            Console.WriteLine("Adding new ware cancelled.");
-            return;
-        }
+//        case "2":
+//            RemoveWare(wareRepository);
+//            break;
 
-    var ware = new Ware { Name = name };
-    wareRepository.Add(ware);
-    wareRepository.Save();
-    Console.WriteLine("Ware added successfully.");
+//        case "3":
+//            ReadWares(wareRepository);
+//            break;
 
-}
+//        case "q":
+//        case "Q":
+//            SaveInfo(wareRepository, wareInFile);
+//            return;
 
-static void RemoveWare(IRepository<Ware> wareRepository)
-{
-    Console.WriteLine("Enter the name of the ware to remove:");
-    var name = Console.ReadLine();
-    var ware = wareRepository.GetAll().FirstOrDefault(w => w.Name == name);
-    if (ware != null)
-    {
-        wareRepository.Remove(ware);
-        wareRepository.Save();
-        Console.WriteLine("Ware removed successfully.");
-        return;
-    }
-    else
-    {
-        Console.WriteLine("Ware not found.");
-    }
-}
+//        default:
+//            Console.WriteLine("You have to type 1,2,3 or Q");
+//            continue;
 
 
-static void ReadWares(IReadRepository<IEntity> repository)
-{
-    var wares = repository.GetAll();
-    foreach (var ware in wares)
-    {
-        Console.WriteLine(ware);
-    }
-}
+//    }  
+//} 
 
-static void SaveInfo(IRepository<Ware> wareRepository, string wareInFile)
-{
-    var wares = wareRepository.GetAll();
-    var jsonList = new List<string>();
+//static void AddWare(IWriteRepository<Ware> wareRepository)
+//{
+//    Console.WriteLine("Enter the name of the ware (or Q to cancel):");
+//    var name = Console.ReadLine();
 
-    foreach (var ware in wares)
-    {
-        var json = JsonSerializer.Serialize(ware);
-        jsonList.Add(json);
-    }
+//        if (name == "q" || name == "Q")
+//        {
+//            Console.WriteLine("Adding new ware cancelled.");
+//            return;
+//        }
 
-    File.WriteAllLines(wareInFile, jsonList);
+//    var ware = new Ware { Name = name };
+//    wareRepository.Add(ware);
+//    wareRepository.Save();
+//    Console.WriteLine("Ware added successfully.");
 
-    Console.WriteLine("Session ended. Goodbye!");
-}
+//}
 
-static void WareAddedHandler(object? sender, Ware ware)
-{
-    var logEntry = $"{DateTime.Now}-Added ware: {ware.Name}";
-    WriteAuditLog(logEntry);
-}
+//static void RemoveWare(IRepository<Ware> wareRepository)
+//{
+//    Console.WriteLine("Enter the name of the ware to remove:");
+//    var name = Console.ReadLine();
+//    var ware = wareRepository.GetAll().FirstOrDefault(w => w.Name == name);
+//    if (ware != null)
+//    {
+//        wareRepository.Remove(ware);
+//        wareRepository.Save();
+//        Console.WriteLine("Ware removed successfully.");
+//        return;
+//    }
+//    else
+//    {
+//        Console.WriteLine("Ware not found.");
+//    }
+//}
 
-static void WareRemovedHandler(object? sender, Ware ware)
-{
-    var logEntry = $"{DateTime.Now}-Removed ware: {ware.Name}";
-    WriteAuditLog(logEntry);
-}
 
-static void WriteAuditLog(string logEntry)
-{
-    var logFileName = "audit_log.txt";
-    using (var writer = File.AppendText(logFileName))
-    {
-        writer.WriteLine(logEntry);
-    }
-}
+//static void ReadWares(IReadRepository<IEntity> repository)
+//{
+//    var wares = repository.GetAll();
+//    foreach (var ware in wares)
+//    {
+//        Console.WriteLine(ware);
+//    }
+//}
+
+//static void SaveInfo(IRepository<Ware> wareRepository, string wareInFile)
+//{
+//    var wares = wareRepository.GetAll();
+//    var jsonList = new List<string>();
+
+//    foreach (var ware in wares)
+//    {
+//        var json = JsonSerializer.Serialize(ware);
+//        jsonList.Add(json);
+//    }
+
+//    File.WriteAllLines(wareInFile, jsonList);
+
+//    Console.WriteLine("Session ended. Goodbye!");
+//}
+
+//static void WareAddedHandler(object? sender, Ware ware)
+//{
+//    var logEntry = $"{DateTime.Now}-Added ware: {ware.Name}";
+//    WriteAuditLog(logEntry);
+//}
+
+//static void WareRemovedHandler(object? sender, Ware ware)
+//{
+//    var logEntry = $"{DateTime.Now}-Removed ware: {ware.Name}";
+//    WriteAuditLog(logEntry);
+//}
+
+//static void WriteAuditLog(string logEntry)
+//{
+//    var logFileName = "audit_log.txt";
+//    using (var writer = File.AppendText(logFileName))
+//    {
+//        writer.WriteLine(logEntry);
+//    }
+//}

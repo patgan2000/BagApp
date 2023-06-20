@@ -7,22 +7,38 @@ namespace WareStorageApp.Repositories
     {
         private readonly List<T> _items = new();
 
-        public event EventHandler<T>? WareAdded;
-        public event EventHandler<T>? WareRemoved;
+        public event EventHandler<T>? BagAdded;
+        public event EventHandler<T>? BagRemoved;
+        public event EventHandler<T>? FileSaved;
+        public event EventHandler<T>? FileRemoved;
 
         public IEnumerable<T> GetAll() => _items.ToList();
 
-        public T? GetById(int id) => _items.Single(T => T.Id == id);
+        public T? GetById(int id) 
+        { 
+            if(_items.Exists(x => x.Id == id))
+            {
+                return _items.Single(T => T.Id == id);
+            }
+            else
+            {
+                return null;
+            }
+        } 
 
         public void Add(T item)
         {
             item.Id = _items.Count + 1;
             _items.Add(item);
+            BagAdded?.Invoke(this, item);
+            FileSaved?.Invoke(this, item);
         }
 
         public void Remove(T item)
         {
             _items.Remove(item);
+            BagRemoved?.Invoke(this, item);
+            FileSaved?.Invoke(this, item);
         }
 
         public void Save()
