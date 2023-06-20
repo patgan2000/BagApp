@@ -8,232 +8,107 @@ namespace WareStorageApp
     public class App : IApp
     {
         private readonly IRepository<Bag> _bagsRepository;
+        private readonly IUserCommunication _userCommunication;
+        private const string DataFilePath = "bags.csv";
 
         public IBagsProvider _bagsProvider { get; }
 
         public App(
             IRepository<Bag> bagRepository,
-            IBagsProvider bagsProvider)
+            IBagsProvider bagsProvider,
+            IUserCommunication userCommunication)
         {
             _bagsRepository = bagRepository;
             _bagsProvider = bagsProvider;
-
+            _userCommunication = userCommunication;
         }
 
-        public void Run() 
+        public void Run()
         {
-            Console.WriteLine("I'm here in Run() method");
+            LoadDataFromCsv();
 
-            var bags = GenerateSampleBags();
-
-            foreach (var bag in bags)
+            Console.Write(_userCommunication.BeginProgram());
+            while (true)
             {
-                _bagsRepository.Add(bag);
-            }
-            _bagsRepository.Save();
+                var userChoose = _userCommunication.UserChoose();
+                if (userChoose == "q" || userChoose == "Q")
+                {
+                    break;
+                }
+                else if (userChoose == "1")
+                {
+                    _userCommunication.AddNewBag();
+                }
+                else if (userChoose == "2")
+                {
+                    _userCommunication.RemoveBagById();
+                }
+                else if (userChoose == "3")
+                {
+                    _userCommunication.GetBagById();
+                }
+                else if (userChoose == "4")
+                {
+                    _userCommunication.GetAllBags();
+                }
+                else
+                {
+                    Console.WriteLine("Wrong char, put 1,2,3,4 or Q.");
+                }
 
-            //var items = _bagsRepository.GetAll();
-
-            //foreach (var item in items)
-            //{
-            //    Console.WriteLine(item);
-            //}
-            Console.WriteLine();
-            Console.WriteLine("Top of 5 the cheapest bags in the collection:");
-            foreach(var bag in _bagsProvider.Take5CheapestBags())
-            {
-                Console.Write(bag);
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Top of 5 the most expensive bags in the collection:");
-            foreach (var bag in _bagsProvider.Take5ExpensiveBags())
-            {
-                Console.Write(bag);
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Bags without purchase price:");
-            foreach (var bag in _bagsProvider.WhereCostIsEmpty())
-            {
-                Console.Write(bag);
+                SaveDataToCsv();
             }
         }
 
-        public static List<Bag> GenerateSampleBags()
+        private void LoadDataFromCsv()
         {
-            return new List<Bag>
+            if (File.Exists(DataFilePath))
             {
-                new Bag
+                try
                 {
-                    Id = 98,
-                    Name = "Sylvie",
-                    Brand = "Gucci",
-                    Year = 2019,
-                    Cost = 1400,
-                    Type = "Shoulder bag"
-                },
+                    var lines = File.ReadAllLines(DataFilePath);
+                    foreach (var line in lines)
+                    {
+                        var values = line.Split(',');
+                        if (values.Length >= 5)
+                        {
+                            var bag = new Bag
+                            {
+                                Name = values[0],
+                                Brand = values[1],
+                                Type = values[2],
+                                Year = decimal.Parse(values[3]),
+                                Cost = decimal.Parse(values[4])
+                            };
+                            _bagsRepository.Add(bag);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error while loading data from CSV: {ex.Message}");
+                }
+            }
+        }
 
-                new Bag
+        private void SaveDataToCsv()
+        {
+            try
+            {
+                var lines = new List<string>();
+                var bags = _bagsRepository.GetAll();
+                foreach (var bag in bags)
                 {
-                    Id = 101,
-                    Name = "Dionysus",
-                    Brand = "Gucci",
-                    Year = 2020,
-                    Cost = 2800,
-                    Type = "Shoulder bag"
-                },
-
-                new Bag
-                {
-                    Id = 22,
-                    Name = "Marmont",
-                    Brand = "Gucci",
-                    Year = 2023,
-                    Cost = 2950,
-                    Type = "Shoulder bag"
-                },
-
-                new Bag
-                {
-                    Id = 55,
-                    Name = "Soho Disco",
-                    Brand = "Gucci",
-                    Year = 2022,
-                    Cost = null,
-                    Type = "Shoulder bag"
-                },
-
-                new Bag
-                {
-                    Id = 25,
-                    Name = "Blooms",
-                    Brand = "Gucci",
-                    Year = 2016,
-                    Cost = 1600,
-                    Type = "Backpack"
-                },
-
-                new Bag
-                {
-                    Id = 1,
-                    Name = "Neverfull",
-                    Brand = "Louis Vuitton",
-                    Year = 2000,
-                    Cost = 2700,
-                    Type = "Tote Bag"
-                },
-
-                new Bag
-                {
-                    Id = 64,
-                    Name = "Pochette",
-                    Brand = "Louis Vuitton",
-                    Year = 2001,
-                    Cost = 900,
-                    Type = "Clutch"
-                },
-
-                new Bag
-                {
-                    Id = 27,
-                    Name = "Speedy",
-                    Brand = "Louis Vuitton",
-                    Year = 1996,
-                    Cost = 2600,
-                    Type = "Shoulder bag"
-                },
-
-                new Bag
-                {
-                    Id = 64,
-                    Name = "Capucines",
-                    Brand = "Louis Vuitton",
-                    Year = 2019,
-                    Cost = 1400,
-                    Type = "Tote bag"
-                },
-
-                new Bag
-                {
-                    Id = 97,
-                    Name = "Neo",
-                    Brand = "Louis Vuitton",
-                    Year = 2017,
-                    Cost = 1800,
-                    Type = "Messenger bag"
-                },
-
-                new Bag
-                {
-                    Id = 10,
-                    Name = "Classic",
-                    Brand = "Chanel",
-                    Year = 2008,
-                    Cost = 4000,
-                    Type = "Shoulder bag"
-                },
-
-                new Bag
-                {
-                    Id = 68,
-                    Name = "Timeless",
-                    Brand = "Chanel",
-                    Year = 2022,
-                    Cost = 2400,
-                    Type = "Clutch"
-                },
-
-                new Bag
-                {
-                    Id = 6,
-                    Name = "Boy",
-                    Brand = "Chanel",
-                    Year = 2002,
-                    Cost = 4500,
-                    Type = "Shoulder bag"
-                },
-
-                new Bag
-                {
-                    Id = 88,
-                    Name = "Camellia",
-                    Brand = "Louis Vuitton",
-                    Year = 2012,
-                    Cost = 1650,
-                    Type = "Clutch"
-                },
-
-                new Bag
-                {
-                    Id = 51,
-                    Name = "Caleido",
-                    Brand = "Gucci",
-                    Year = 2017,
-                    Cost = 1200,
-                    Type = "Backpack"
-                },
-
-                new Bag
-                {
-                    Id = 20,
-                    Name = "Supreme",
-                    Brand = "Gucci",
-                    Year = 2019,
-                    Cost = 750,
-                    Type = "Messenger bag"
-                },
-
-                new Bag
-                {
-                    Id = 32,
-                    Name = "Arli",
-                    Brand = "Gucci",
-                    Year = 2019,
-                    Cost = 650,
-                    Type = "Shoulder bag"
-                },
-            };
+                    var line = $"{bag.Name},{bag.Brand},{bag.Type},{bag.Year},{bag.Cost}";
+                    lines.Add(line);
+                }
+                File.WriteAllLines(DataFilePath, lines);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while saving data to CSV: {ex.Message}");
+                // Obsłuż wyjątek w odpowiedni sposób, np. zapisz w logach lub zakończ działanie programu
+            }
         }
     }
 }

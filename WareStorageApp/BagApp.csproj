@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Accord.IO" Version="3.8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.5" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
