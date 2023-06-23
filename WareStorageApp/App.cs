@@ -1,30 +1,37 @@
-﻿using System.Xml.Linq;
-using WareStorageApp.DataProvides;
-using WareStorageApp.Entities;
-using WareStorageApp.Repositories;
+﻿using BagApp.Components.CsvReader;
+using BagApp.Components.CsvReader.Models;
+using BagApp.Components.DataProvides;
+using BagApp.Data.Repositories;
+using System.Xml.Linq;
 
-namespace WareStorageApp
+namespace BagApp
 {
     public class App : IApp
     {
+        private readonly ICsvReader _csvReader;
         private readonly IRepository<Bag> _bagsRepository;
         private readonly IUserCommunication _userCommunication;
-        private const string DataFilePath = "bags.csv";
+        private const string DataFilePath = "Resources\\bag.csv";
 
         public IBagsProvider _bagsProvider { get; }
 
         public App(
             IRepository<Bag> bagRepository,
             IBagsProvider bagsProvider,
-            IUserCommunication userCommunication)
+            IUserCommunication userCommunication,
+            ICsvReader csvReader)
         {
             _bagsRepository = bagRepository;
             _bagsProvider = bagsProvider;
             _userCommunication = userCommunication;
+            _csvReader = csvReader;
         }
 
         public void Run()
         {
+            CreateXml();
+            QueryXml();
+
             LoadDataFromCsv();
 
             Console.Write(_userCommunication.BeginProgram());
@@ -60,6 +67,37 @@ namespace WareStorageApp
             }
         }
 
+        private static void QueryXml()
+        {
+            var document = XDocument.Load("bag.xml");
+            var names = document
+                .Element("Bags")?
+                .Elements("Bag")
+                .Select(v => v.Attribute("Brand")?.Value);
+
+            foreach (var name in names)
+            {
+                Console.WriteLine(name);
+            }
+        }
+
+        private void CreateXml()
+        {
+            var records = _csvReader.ProcessBags(DataFilePath);
+
+            var document = new XDocument();
+            var bags = new XElement("Bags", records
+                .Select(x =>
+                new XElement("Bag",
+                    new XAttribute("Name", x.Name),
+                    new XAttribute("Brand", x.Brand),
+                    new XAttribute("Price", x.Price))
+
+            ));
+            document.Add(bags);
+            document.Save("bag.xml");
+        }
+
         private void LoadDataFromCsv()
         {
             if (File.Exists(DataFilePath))
@@ -70,15 +108,14 @@ namespace WareStorageApp
                     foreach (var line in lines)
                     {
                         var values = line.Split(',');
-                        if (values.Length >= 5)
+                        if (values.Length >= 1)
                         {
                             var bag = new Bag
                             {
                                 Name = values[0],
                                 Brand = values[1],
-                                Type = values[2],
-                                Year = decimal.Parse(values[3]),
-                                Cost = decimal.Parse(values[4])
+                                Year = int.Parse(values[2]),
+                                Price = decimal.Parse(values[3])
                             };
                             _bagsRepository.Add(bag);
                         }
@@ -88,6 +125,8 @@ namespace WareStorageApp
                 {
                     Console.WriteLine($"Error while loading data from CSV: {ex.Message}");
                 }
+
+
             }
         }
 
@@ -99,7 +138,7 @@ namespace WareStorageApp
                 var bags = _bagsRepository.GetAll();
                 foreach (var bag in bags)
                 {
-                    var line = $"{bag.Name},{bag.Brand},{bag.Type},{bag.Year},{bag.Cost}";
+                    var line = $"{bag.Name},{bag.Brand},{bag.Year},{bag.Price}";
                     lines.Add(line);
                 }
                 File.WriteAllLines(DataFilePath, lines);
@@ -107,7 +146,6 @@ namespace WareStorageApp
             catch (Exception ex)
             {
                 Console.WriteLine($"Error while saving data to CSV: {ex.Message}");
-                // Obsłuż wyjątek w odpowiedni sposób, np. zapisz w logach lub zakończ działanie programu
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace WareStorageApp
+﻿namespace BagApp
 {
     public interface IUserCommunication
     {

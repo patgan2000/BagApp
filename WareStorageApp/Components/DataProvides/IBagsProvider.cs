@@ -1,6 +1,6 @@
-﻿using WareStorageApp.Entities;
+﻿using BagApp.Components.CsvReader.Models;
 
-namespace WareStorageApp.DataProvides
+namespace BagApp.Components.DataProvides
 {
     public interface IBagsProvider
     {
@@ -33,7 +33,7 @@ namespace WareStorageApp.DataProvides
 
 
         //skip
-        
+
 
         //chunk
         List<Bag[]> ChunkBags(int id);

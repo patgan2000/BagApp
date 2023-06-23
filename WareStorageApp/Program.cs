@@ -1,17 +1,19 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using WareStorageApp;
-using WareStorageApp.DataProvides;
-using WareStorageApp.Entities;
-using WareStorageApp.Repositories;
+﻿using BagApp;
+using BagApp.Components.CsvReader;
+using BagApp.Components.CsvReader.Models;
+using BagApp.Components.DataProvides;
+using BagApp.Data.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
-services.AddSingleton<IApp, App> (); 
-services.AddSingleton<IRepository<Bag>, ListRepository<Bag>> (); 
-services.AddSingleton<IUserCommunication, UserCommunication> ();
+services.AddSingleton<IApp, App>();
+services.AddSingleton<IRepository<Bag>, ListRepository<Bag>>();
+services.AddSingleton<IUserCommunication, UserCommunication>();
 services.AddSingleton<IBagsProvider, BagsProvider>();
+services.AddSingleton<ICsvReader, CsvReader>();
 
 var serviceProvider = services.BuildServiceProvider();
-var app = serviceProvider.GetService<IApp> ()!;
+var app = serviceProvider.GetService<IApp>()!;
 app.Run();
 
 //Console.WriteLine("*****************************************************************************");

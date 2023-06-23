@@ -1,6 +1,6 @@
-﻿using WareStorageApp.Entities;
+﻿using BagApp.Data.Entities;
 
-namespace WareStorageApp.Repositories
+namespace BagApp.Data.Repositories
 {
     public class ListRepository<T> : IRepository<T>, IReadRepository<T>
         where T : class, IEntity, new()
@@ -14,9 +14,9 @@ namespace WareStorageApp.Repositories
 
         public IEnumerable<T> GetAll() => _items.ToList();
 
-        public T? GetById(int id) 
-        { 
-            if(_items.Exists(x => x.Id == id))
+        public T? GetById(int id)
+        {
+            if (_items.Exists(x => x.Id == id))
             {
                 return _items.Single(T => T.Id == id);
             }
@@ -24,7 +24,7 @@ namespace WareStorageApp.Repositories
             {
                 return null;
             }
-        } 
+        }
 
         public void Add(T item)
         {

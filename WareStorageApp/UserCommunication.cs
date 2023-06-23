@@ -1,10 +1,8 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using BagApp.Components.CsvReader.Models;
+using BagApp.Data.Repositories;
 using System.Text;
-using WareStorageApp.DataProvides;
-using WareStorageApp.Entities;
-using WareStorageApp.Repositories;
 
-namespace WareStorageApp
+namespace BagApp
 {
     public class UserCommunication : IUserCommunication
     {
@@ -15,9 +13,10 @@ namespace WareStorageApp
             _bagsRepository = bagsRepository;
             _bagsRepository.BagAdded += BagAddedEvent;
             _bagsRepository.BagRemoved += BagRemovedEvent;
+
         }
 
-        public static void BagAddedEvent (object? sender, Bag e)
+        public static void BagAddedEvent(object? sender, Bag e)
         {
             Console.WriteLine("Bag added successfully!");
         }
@@ -25,6 +24,11 @@ namespace WareStorageApp
         public static void BagRemovedEvent(object? sender, Bag e)
         {
             Console.WriteLine("Bag removed successfully!");
+        }
+
+        public static void BaseLoadEvent(object? sender, Bag e)
+        {
+            Console.WriteLine("Database loaded successfully!");
         }
 
         public string BeginProgram()
@@ -55,18 +59,15 @@ namespace WareStorageApp
             var nameOfBag = Console.ReadLine();
             Console.Write("Brand: ");
             var brandOfBag = Console.ReadLine();
-            Console.Write("Type: ");
-            var typeOfBag = Console.ReadLine();
             Console.Write("Year of production: ");
             var yearOfBag = decimal.Parse(Console.ReadLine() ?? "0");
             Console.Write("Purchase cost: ");
-            var costOfBag = decimal.Parse(Console.ReadLine() ?? "0");
+            var priceOfBag = decimal.Parse(Console.ReadLine() ?? "0");
 
             bag.Name = nameOfBag;
             bag.Brand = brandOfBag;
-            bag.Type = typeOfBag;
-            bag.Year = yearOfBag;
-            bag.Cost = costOfBag;
+            bag.Year = (int)yearOfBag;
+            bag.Price = priceOfBag;
 
             _bagsRepository.Add(bag);
         }

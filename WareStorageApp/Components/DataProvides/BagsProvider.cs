@@ -1,14 +1,13 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using WareStorageApp.Entities;
-using WareStorageApp.Repositories;
+﻿using BagApp.Components.CsvReader.Models;
+using BagApp.Data.Repositories;
 
-namespace WareStorageApp.DataProvides
+namespace BagApp.Components.DataProvides
 {
     public class BagsProvider : IBagsProvider
     {
         private readonly IRepository<Bag> _bagsRepository;
 
-        public BagsProvider(IRepository<Bag> bagsRepository) 
+        public BagsProvider(IRepository<Bag> bagsRepository)
         {
             _bagsRepository = bagsRepository;
         }
@@ -33,7 +32,7 @@ namespace WareStorageApp.DataProvides
         public decimal? GetMostExpensiveBag()
         {
             var bags = _bagsRepository.GetAll();
-            return bags.Select(x => x.Cost).Max();
+            return bags.Select(x => x.Price).Max();
         }
 
         public List<Bag> OrderByBrandAndName()
@@ -61,7 +60,7 @@ namespace WareStorageApp.DataProvides
         {
             var bags = _bagsRepository.GetAll();
             return bags
-                .OrderBy(x => x.Cost)
+                .OrderBy(x => x.Price)
                 .Take(5)
                 .ToList();
         }
@@ -70,7 +69,7 @@ namespace WareStorageApp.DataProvides
         {
             var bags = _bagsRepository.GetAll();
             return bags
-                .OrderByDescending(x => x.Cost)
+                .OrderByDescending(x => x.Price)
                 .Take(5)
                 .ToList();
         }
@@ -85,13 +84,13 @@ namespace WareStorageApp.DataProvides
         public List<Bag> WhereBrandIs(string brand)
         {
             var bags = _bagsRepository.GetAll();
-            return bags.Where(x =>x.Brand == brand).ToList();
+            return bags.Where(x => x.Brand == brand).ToList();
         }
 
         public List<Bag> WhereCostIsEmpty()
         {
             var bags = _bagsRepository.GetAll();
-            return bags.Where(x => x.Cost == 0 || x.Cost == null).ToList();
+            return bags.Where(x => x.Price == 0 || x.Price == null).ToList();
         }
 
 

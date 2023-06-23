@@ -13,4 +13,25 @@
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="C:\Users\patga\.nuget\packages\accord\3.8.0\build\Accord.dll.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\patga\.nuget\packages\accord\3.8.0\build\Accord.dll.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\patga\.nuget\packages\accord\3.8.0\build\Accord.dll.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\bag.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\shop.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

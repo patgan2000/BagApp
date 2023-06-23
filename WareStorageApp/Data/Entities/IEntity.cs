@@ -1,4 +1,4 @@
-﻿namespace WareStorageApp.Entities
+﻿namespace BagApp.Data.Entities
 {
     public interface IEntity
     {

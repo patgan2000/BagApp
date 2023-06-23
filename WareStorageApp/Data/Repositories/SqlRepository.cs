@@ -1,19 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WareStorageApp.Entities;
+﻿using BagApp.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace WareStorageApp.Repositories
+namespace BagApp.Data.Repositories
 {
     public class SqlRepository<T> : IRepository<T>
         where T : class, IEntity, new()
     {
         private readonly DbSet<T> _bags;
         private readonly DbContext _dbContext;
-        private string fileName = "bags.txt";
+        private string fileName = "Resources\\bags.csv";
 
         public event EventHandler<T>? BagAdded;
         public event EventHandler<T>? BagRemoved;
@@ -34,13 +29,13 @@ namespace WareStorageApp.Repositories
             if (File.Exists(fileName))
             {
                 var linesFromFile = new Dictionary<int, string>(); ;
-                using(var reader = File.OpenText(fileName))
+                using (var reader = File.OpenText(fileName))
                 {
                     var line = reader.ReadLine();
                     int i = 1;
-                    while(line!= null)
+                    while (line != null)
                     {
-                        linesFromFile.Add(i,line);
+                        linesFromFile.Add(i, line);
                         line = reader.ReadLine();
                         i++;
                     }
@@ -69,10 +64,10 @@ namespace WareStorageApp.Repositories
             }
         }
 
-        public void Add(T item) 
+        public void Add(T item)
         {
             _bags.Add(item);
-            using(var writer = File.AppendText(fileName))
+            using (var writer = File.AppendText(fileName))
             {
                 writer.Write(item);
             }
@@ -80,16 +75,16 @@ namespace WareStorageApp.Repositories
             FileSavedAdded?.Invoke(this, item);
 
         }
-        public void Remove1(T item) 
+        public void Remove1(T item)
         {
             if (File.Exists(fileName))
             {
                 var bags = GetAll1();
                 bags.Remove(item.Id);
                 File.Delete(fileName);
-                using(var writer = File.AppendText(fileName))
+                using (var writer = File.AppendText(fileName))
                 {
-                    foreach(var bag in bags)
+                    foreach (var bag in bags)
                     {
                         writer?.WriteLine(bag.Value);
                     }
@@ -101,7 +96,7 @@ namespace WareStorageApp.Repositories
             {
                 throw new Exception("File doesn't exist.");
             }
-        } 
+        }
 
         public void Remove(T item)
         {

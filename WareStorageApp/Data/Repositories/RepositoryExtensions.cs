@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WareStorageApp.Entities;
+﻿using BagApp.Data.Entities;
 
-namespace WareStorageApp.Repositories
+namespace BagApp.Data.Repositories
 {
     public static class RepositoryExtensions
     {

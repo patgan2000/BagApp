@@ -1,6 +1,6 @@
-﻿using WareStorageApp.Entities;
+﻿using BagApp.Data.Entities;
 
-namespace WareStorageApp.Repositories
+namespace BagApp.Data.Repositories
 {
     public interface IWriteRepository<in T>
         where T : class, IEntity
