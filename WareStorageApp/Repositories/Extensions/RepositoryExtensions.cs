@@ -1,11 +1,10 @@
-﻿using BagApp.Data.Entities;
+﻿using BagApp.Entities;
 
-namespace BagApp.Data.Repositories
+namespace BagApp.Repositories.Extensions
 {
     public static class RepositoryExtensions
     {
-        public static void AddBatch<T>(this IRepository<T> repository, T[] items)
-            where T : class, IEntity
+        public static void AddBatch<T>(this IRepository<T> repository, T[] items) where T : class, IEntity
         {
             foreach (var item in items)
             {

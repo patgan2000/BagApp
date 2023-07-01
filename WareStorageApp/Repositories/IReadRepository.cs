@@ -1,6 +1,6 @@
-﻿using BagApp.Data.Entities;
+﻿using BagApp.Entities;
 
-namespace BagApp.Data.Repositories
+namespace BagApp.Repositories
 {
     public interface IReadRepository<out T>
         where T : class, IEntity
@@ -8,6 +8,8 @@ namespace BagApp.Data.Repositories
         IEnumerable<T> GetAll();
 
         T? GetById(int id);
+
+        IEnumerable<T> Read();
 
     }
 }

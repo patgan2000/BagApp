@@ -1,8 +1,8 @@
-﻿using BagApp.Components.CsvReader.Models;
+﻿using BagApp.Components.Models;
 
 namespace BagApp.Components.CsvReader.Extensions
 {
-    public static class BagExtensions
+    public static class BagExtension
     {
         public static IEnumerable<Bag> ToBag(this IEnumerable<string> source)
         {
@@ -15,11 +15,9 @@ namespace BagApp.Components.CsvReader.Extensions
                     Name = columns[0],
                     Brand = columns[1],
                     Year = int.Parse(columns[2]),
-                    Price = decimal.Parse(columns[3])
+                    Price = int.Parse(columns[3]),
                 };
-
             }
         }
-
     }
 }

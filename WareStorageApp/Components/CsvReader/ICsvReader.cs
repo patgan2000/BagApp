@@ -1,4 +1,4 @@
-﻿using BagApp.Components.CsvReader.Models;
+﻿using BagApp.Components.Models;
 
 namespace BagApp.Components.CsvReader
 {

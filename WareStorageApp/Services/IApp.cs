@@ -1,4 +1,4 @@
-﻿namespace BagApp
+﻿namespace BagApp.Services
 {
     public interface IApp
     {

@@ -1,4 +1,4 @@
-﻿namespace BagApp.Data.Entities
+﻿namespace BagApp.Entities
 {
     public abstract class EntityBase : IEntity
     {
