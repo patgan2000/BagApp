@@ -1,7 +1,7 @@
-﻿using BagApp.Entities;
+﻿using BagApp.Data.Entities;
 using System.Text.Json;
 
-namespace BagApp.Repositories
+namespace BagApp.Data.Repositories
 {
     public class FileRepositry<T> : IRepository<T>
         where T : class, IEntity, new()

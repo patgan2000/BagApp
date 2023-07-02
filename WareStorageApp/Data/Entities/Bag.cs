@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BagApp.Entities
+namespace BagApp.Data.Entities
 {
     public class Bag : EntityBase
     {
@@ -12,7 +12,7 @@ namespace BagApp.Entities
         public int? Year { get; set; }
         public int? Price { get; set; }
 
-        
+
 
         public override string ToString() => $"{Id},{Brand} {Name},\n" +
                                              $" \n   Year: {Year}" +

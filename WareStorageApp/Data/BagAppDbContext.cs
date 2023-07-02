@@ -1,5 +1,5 @@
 ﻿
-using BagApp.Entities;
+using BagApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BagApp.Data

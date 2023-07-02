@@ -1,12 +1,12 @@
 ﻿using BagApp.Components.CsvReader;
 using BagApp.Components.XmlCreator;
 using BagApp.Data;
-using BagApp.Entities;
-using BagApp.Repositories;
 using BagApp.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using BagApp.Data.Entities;
+using BagApp.Data.Repositories;
 
 var services = new ServiceCollection();
 services.AddSingleton<IApp, App>();

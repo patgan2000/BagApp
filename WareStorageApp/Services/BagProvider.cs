@@ -1,6 +1,6 @@
-﻿using BagApp.Entities;
-using BagApp.Repositories;
-using BagApp.Repositories.Extensions;
+﻿using BagApp.Data.Entities;
+using BagApp.Data.Repositories;
+using BagApp.Data.Repositories.Extensions;
 
 namespace BagApp.Services
 {

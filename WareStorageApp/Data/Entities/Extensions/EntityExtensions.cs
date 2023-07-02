@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace BagApp.Entities.Extensions
+namespace BagApp.Data.Entities.Extensions
 {
     public static class EntityExtensions
     {

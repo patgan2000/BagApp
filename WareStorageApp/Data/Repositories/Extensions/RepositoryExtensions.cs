@@ -1,6 +1,6 @@
-﻿using BagApp.Entities;
+﻿using BagApp.Data.Entities;
 
-namespace BagApp.Repositories.Extensions
+namespace BagApp.Data.Repositories.Extensions
 {
     public static class RepositoryExtensions
     {

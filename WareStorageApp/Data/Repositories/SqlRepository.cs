@@ -1,7 +1,7 @@
-﻿using BagApp.Entities;
+﻿using BagApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BagApp.Repositories
+namespace BagApp.Data.Repositories
 {
     public class SqlRepository<T> : IRepository<T>
         where T : class, IEntity, new()

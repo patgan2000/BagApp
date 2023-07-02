@@ -1,6 +1,6 @@
-﻿using BagApp.Entities;
+﻿using BagApp.Data.Entities;
 
-namespace BagApp.Repositories
+namespace BagApp.Data.Repositories
 {
     public interface IReadRepository<out T>
         where T : class, IEntity

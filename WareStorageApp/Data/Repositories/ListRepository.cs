@@ -1,7 +1,6 @@
-﻿
-using BagApp.Entities;
+﻿using BagApp.Data.Entities;
 
-namespace BagApp.Repositories
+namespace BagApp.Data.Repositories
 {
     public class ListRepository<T> : IRepository<T>
         where T : class, IEntity, new()

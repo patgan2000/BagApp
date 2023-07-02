@@ -1,11 +1,10 @@
 ﻿using BagApp.Components.CsvReader;
 using BagApp.Data;
-using BagApp.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore.SqlServer;
-using BagApp.Repositories;
+
 
 namespace BagApp.Services
 {
