@@ -26,6 +26,7 @@ namespace BagApp.Services
                 Console.WriteLine("3. Get all bags");
                 Console.WriteLine("4. Get bag by ID");
                 Console.WriteLine("5. Edit bag");
+                Console.WriteLine("6. Search bag");
                 Console.WriteLine("Q. Quit the program\n");
                 Console.Write("Your choice: ");
                 var choice = Console.ReadLine();
@@ -42,6 +43,8 @@ namespace BagApp.Services
                         GetByID(_bagRepository); break;
                     case "5":
                         EditBag(_bagRepository); break;
+                    case "6":
+                        SearchBag(_bagRepository); break;
                     case "q":
                     case "Q":
                         return;
@@ -52,7 +55,7 @@ namespace BagApp.Services
             }
         }
 
-        static void AddNewBag(IRepository<Bag> newBag)
+        static void AddNewBag(IRepository<Bag> newBag)  //1
         {
             Console.Write("Name: ");
             var name = Console.ReadLine();
@@ -85,7 +88,7 @@ namespace BagApp.Services
             newBag.Save();
         }
 
-        static void RemoveBag(IRepository<Bag> removeBag)
+        static void RemoveBag(IRepository<Bag> removeBag)   //2
         {
             removeBag.Read();
             Console.Write("Put an ID of bag to remove: ");
@@ -95,7 +98,7 @@ namespace BagApp.Services
             removeBag.Save();
         }
 
-        static void WriteAllToConsole<T>(IRepository<T> bagRepository) where T : class, IEntity
+        static void WriteAllToConsole<T>(IRepository<T> bagRepository) where T : class, IEntity //3
         {
             var bags = bagRepository.Read();
 
@@ -106,7 +109,7 @@ namespace BagApp.Services
             }
         }
 
-        static void GetByID(IRepository<Bag> showBag)
+        static void GetByID(IRepository<Bag> showBag)   //4
         {
             showBag.Read();
             Console.Write("Put an ID of bag to show: ");
@@ -115,7 +118,7 @@ namespace BagApp.Services
             Console.WriteLine($"{bag.Name},{bag.Brand},{bag.Year},{bag.Price}");
         }
 
-        static void EditBag(IRepository<Bag> bagRepository)
+        static void EditBag(IRepository<Bag> bagRepository)     //5
         {
             Console.WriteLine("Enter the ID of bag to edit:");
             var idToEdit = Console.ReadLine();
@@ -179,5 +182,65 @@ namespace BagApp.Services
                 Console.WriteLine("ID not found");
             }
         }
+
+        static void SearchBag(IRepository<Bag> bagRepository)       //6
+        {
+            Console.WriteLine("Search bag by:");
+            Console.WriteLine("1. Name");
+            Console.WriteLine("2. Brand");
+            Console.WriteLine("3. Year");
+            Console.Write("Your choice: ");
+            var searchChoice = Console.ReadLine();
+
+            string searchTerm;
+            switch (searchChoice)
+            {
+                case "1":
+                    Console.Write("Enter the name to search: ");
+                    searchTerm = Console.ReadLine();
+                    var bagsByName = bagRepository.GetAll().Where(b => b.Name.Contains(searchTerm));
+                    WriteBagsToConsole(bagsByName);
+                    break;
+                case "2":
+                    Console.Write("Enter the brand to search: ");
+                    searchTerm = Console.ReadLine();
+                    var bagsByBrand = bagRepository.GetAll().Where(b => b.Brand.Contains(searchTerm));
+                    WriteBagsToConsole(bagsByBrand);
+                    break;
+                case "3":
+                    Console.Write("Enter the year to search: ");
+                    if (int.TryParse(Console.ReadLine(), out var searchYear))
+                    {
+                        var bagsByYear = bagRepository.GetAll().Where(b => b.Year == searchYear);
+                        WriteBagsToConsole(bagsByYear);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid year format.");
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
+            }
+
+
+            static void WriteBagsToConsole(IEnumerable<Bag> bags)
+            {
+                if (bags.Any())
+                {
+                    Console.WriteLine("Search results:");
+                    foreach (var bag in bags)
+                    {
+                        Console.WriteLine($"{bag.Id}, {bag.Name}, {bag.Brand}, {bag.Year}, {bag.Price}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No bags found.");
+                }
+            }
+        }
+
     }
 }

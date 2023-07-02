@@ -15,6 +15,7 @@ services.AddSingleton<IEventHandelerService, EventHandlerService>();
 services.AddSingleton<IBagProvider, BagProvider>();
 services.AddSingleton<IRepository<Bag>, SqlRepository<Bag>>();
 services.AddSingleton<ICsvReader, CsvReader>();
+services.AddSingleton<IDataSqlProvider, DataSqlProvider>();
 services.AddSingleton<IXmlCreator, XmlCreator>();
 services.AddSingleton<DbContext, BagAppDbContext>();
 
