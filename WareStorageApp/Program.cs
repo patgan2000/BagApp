@@ -6,6 +6,7 @@ using BagApp.Repositories;
 using BagApp.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 var services = new ServiceCollection();
 services.AddSingleton<IApp, App>();
@@ -18,8 +19,10 @@ services.AddSingleton<IXmlCreator, XmlCreator>();
 services.AddSingleton<DbContext, BagAppDbContext>();
 
 services.AddDbContext<BagAppDbContext>(options =>
-    options.UseSqlServer("Data Source=PATRYCJA\\SQLEXPRESS;Initial Catalog=BagAppDateBase;Integrated Security=True; Trusted_Connection=True;TrustServerCertificate=True;"));
+            options.UseSqlServer("Data Source=PATRYCJA\\SQLEXPRESS;Initial Catalog=BagAppDateBase;Integrated Security=True; Trusted_Connection=True;TrustServerCertificate=True;"));
 
 var serviceProvider = services.BuildServiceProvider();
 var app = serviceProvider.GetService<IApp>();
 app.Run();
+
+

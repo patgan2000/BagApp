@@ -1,5 +1,4 @@
-﻿using BagApp.Components.Models;
-using BagApp.Entities;
+﻿using BagApp.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BagApp.Data
@@ -11,8 +10,15 @@ namespace BagApp.Data
         {
         }
 
-        public DbSet<BagApp.Entities.Bag> Bags { get; set; }
-        public DbSet<BagApp.Components.Models.Bag> BagModels { get; set; }
+        public DbSet<Bag> Bags { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Bag>().ToTable("Bags"); 
+
+            base.OnModelCreating(modelBuilder);
+        }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

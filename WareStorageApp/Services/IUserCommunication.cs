@@ -1,6 +1,4 @@
-﻿using BagApp.Components.Models;
-
-namespace BagApp.Services
+﻿namespace BagApp.Services
 {
     public interface IUserCommunication
     {

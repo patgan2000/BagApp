@@ -13,6 +13,7 @@ namespace BagApp.Services
             _bagRepository = bagRepository;
         }
 
+
         public void AddBags()
         {
             var bag = new Bag[]
@@ -26,6 +27,7 @@ namespace BagApp.Services
                 new Bag{Name = "Cappucines", Brand = "Louis Vuitton", Year = 2016, Price = 2200},
             };
             _bagRepository.AddBatch(bag);
+            _bagRepository.Save();
         }
     }
 }
