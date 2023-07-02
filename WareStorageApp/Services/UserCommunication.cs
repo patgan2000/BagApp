@@ -241,6 +241,5 @@ namespace BagApp.Services
                 }
             }
         }
-
     }
 }

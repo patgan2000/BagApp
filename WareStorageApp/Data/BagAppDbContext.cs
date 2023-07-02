@@ -1,4 +1,5 @@
-﻿using BagApp.Entities;
+﻿
+using BagApp.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BagApp.Data
@@ -15,7 +16,6 @@ namespace BagApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Bag>().ToTable("Bags"); 
-
             base.OnModelCreating(modelBuilder);
         }
 
@@ -25,6 +25,5 @@ namespace BagApp.Data
             optionsBuilder.LogTo(message => File.AppendAllText("LogsHistory.txt", message));
             base.OnConfiguring(optionsBuilder);
         }
-
     }
 }
